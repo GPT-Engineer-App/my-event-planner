@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Container, Box, Heading, Text, VStack, HStack, Button, Input, Textarea, IconButton, Spacer } from "@chakra-ui/react";
-import { FaPlus, FaEdit, FaTrash } from "react-icons/fa";
+import { FaPlus, FaEdit, FaTrash, FaStar, FaRegStar } from "react-icons/fa";
 
 const Index = () => {
   const [events, setEvents] = useState(() => JSON.parse(localStorage.getItem("events")) || []);
@@ -11,12 +11,12 @@ const Index = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (editIndex === -1) {
-      const newEvents = [...events, { name, description }];
+      const newEvents = [...events, { name, description, favorite: false }];
       setEvents(newEvents);
       localStorage.setItem("events", JSON.stringify(newEvents));
     } else {
       const updatedEvents = [...events];
-      updatedEvents[editIndex] = { name, description };
+      updatedEvents[editIndex] = { ...updatedEvents[editIndex], name, description };
       setEvents(updatedEvents);
       localStorage.setItem("events", JSON.stringify(updatedEvents));
       setEditIndex(-1);
@@ -29,6 +29,13 @@ const Index = () => {
     setName(events[index].name);
     setDescription(events[index].description);
     setEditIndex(index);
+  };
+
+  const toggleFavorite = (index) => {
+    const updatedEvents = [...events];
+    updatedEvents[index].favorite = !updatedEvents[index].favorite;
+    setEvents(updatedEvents);
+    localStorage.setItem("events", JSON.stringify(updatedEvents));
   };
 
   const handleDelete = (index) => {
@@ -53,12 +60,13 @@ const Index = () => {
       </Box>
       <VStack spacing={4} align="stretch">
         {events.map((event, index) => (
-          <Box key={index} p={4} borderWidth={1} borderRadius="md">
+          <Box key={index} p={4} borderWidth={1} borderRadius="md" bg={event.favorite ? "yellow.100" : "white"}>
             <HStack>
               <Text fontWeight="bold">{event.name}</Text>
               <Spacer />
               <IconButton icon={<FaEdit />} aria-label="Edit Event" onClick={() => handleEdit(index)} />
               <IconButton icon={<FaTrash />} aria-label="Delete Event" onClick={() => handleDelete(index)} />
+              <IconButton icon={event.favorite ? <FaStar /> : <FaRegStar />} aria-label="Toggle Favorite" onClick={() => toggleFavorite(index)} />
             </HStack>
             <Text mt={2}>{event.description}</Text>
           </Box>
