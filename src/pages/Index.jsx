@@ -3,7 +3,7 @@ import { Container, Box, Heading, Text, VStack, HStack, Button, Input, Textarea,
 import { FaPlus, FaEdit, FaTrash } from "react-icons/fa";
 
 const Index = () => {
-  const [events, setEvents] = useState([]);
+  const [events, setEvents] = useState(() => JSON.parse(localStorage.getItem("events")) || []);
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [editIndex, setEditIndex] = useState(-1);
@@ -11,11 +11,14 @@ const Index = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (editIndex === -1) {
-      setEvents([...events, { name, description }]);
+      const newEvents = [...events, { name, description }];
+      setEvents(newEvents);
+      localStorage.setItem("events", JSON.stringify(newEvents));
     } else {
       const updatedEvents = [...events];
       updatedEvents[editIndex] = { name, description };
       setEvents(updatedEvents);
+      localStorage.setItem("events", JSON.stringify(updatedEvents));
       setEditIndex(-1);
     }
     setName("");
@@ -31,6 +34,7 @@ const Index = () => {
   const handleDelete = (index) => {
     const updatedEvents = events.filter((_, i) => i !== index);
     setEvents(updatedEvents);
+    localStorage.setItem("events", JSON.stringify(updatedEvents));
   };
 
   return (
