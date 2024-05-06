@@ -72,6 +72,16 @@ const Index = () => {
       >
         Add New Event
       </Button>
+      <Button
+        colorScheme="red"
+        mt={4}
+        onClick={() => {
+          localStorage.removeItem("isLoggedIn");
+          window.location.href = "/login";
+        }}
+      >
+        Logout
+      </Button>
     </Container>
   );
 };
